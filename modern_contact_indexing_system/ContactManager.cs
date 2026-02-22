@@ -96,6 +96,7 @@ namespace modern_contact_indexing_system
             Contact? contact = _contacts.FirstOrDefault(c => c.Name == NameToBeEdited);
             if (contact != null) {
                 contact.Phone = NewPhone;
+               
                 return;
                 
             }

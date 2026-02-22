@@ -11,7 +11,7 @@ namespace modern_contact_indexing_system
     {
         private const string FileName = "contacts.json";
         public void Save(List<Contact> contacts) {
-            string json = JsonSerializer.Serialize(contacts);
+            string json = JsonSerializer.Serialize(contacts , new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(FileName, json);
 
         }
@@ -22,8 +22,14 @@ namespace modern_contact_indexing_system
                 return new List<Contact>();
             }
             string json = File.ReadAllText(FileName);
-            return JsonSerializer.Deserialize<List<Contact>>(json)
-                   ?? new List<Contact>();
+            var contacts = JsonSerializer.Deserialize<List<Contact>>(json,
+         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<Contact>();
+
+            
+            if (contacts.Count > 0)
+                Contact.SetIdCounter(contacts.Max(c => c.Id));
+
+            return contacts;
 
         }
 
