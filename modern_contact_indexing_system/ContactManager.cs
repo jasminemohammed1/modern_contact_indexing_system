@@ -15,8 +15,9 @@ namespace modern_contact_indexing_system
 
         public ContactManager(IStorage storage)
         {
-            _contacts = _storage.LoadContacts();
             _storage = storage;
+            _contacts = _storage.LoadContacts();
+            
         }
 
         public void ViewContact(Contact contact)
