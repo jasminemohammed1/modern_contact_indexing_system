@@ -82,6 +82,10 @@ namespace modern_contact_indexing_system
 
   
         }
+        public override string ToString()
+        {
+            return $"Id: {Id}, Name: {Name}, Phone: {Phone}, Email: {Email}, CreationDate: {CreationDate}";
+        }
 
 
 
