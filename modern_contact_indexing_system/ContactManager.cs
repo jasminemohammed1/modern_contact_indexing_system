@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,11 +10,13 @@ namespace modern_contact_indexing_system
     internal class ContactManager
     {
         private List<Contact> _contacts { get; set; }
+        private readonly IStorage _storage;
 
 
-        public ContactManager()
+        public ContactManager(IStorage storage)
         {
-            _contacts = new List<Contact>();
+            _contacts = _storage.LoadContacts();
+            _storage = storage;
         }
 
         public void ViewContact(Contact contact)
@@ -126,6 +129,13 @@ namespace modern_contact_indexing_system
             return _contacts.Where(c => c.CreationDate.Date == date.Date).ToList();
         }
 
+
+        public void Save()
+        {
+            _storage.Save(_contacts);
+            Console.WriteLine("Contacts Saved Sucessfully");
+
+        }
 
 
 
