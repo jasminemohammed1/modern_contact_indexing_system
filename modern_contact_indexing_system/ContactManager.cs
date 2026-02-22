@@ -114,6 +114,20 @@ namespace modern_contact_indexing_system
 
         }
 
+        public List<Contact> DisplayMatchingContactsByName(string name)
+        {
+            return _contacts
+                .Where(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        public List<Contact> FilterByDate(DateTime date)
+        {
+            return _contacts.Where(c => c.CreationDate.Date == date.Date).ToList();
+        }
+
+
+
 
     }
 }
