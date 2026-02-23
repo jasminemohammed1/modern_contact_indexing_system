@@ -1,5 +1,6 @@
-﻿
-namespace modern_contact_indexing_system
+﻿using modern_contact_indexing_system.Storage;
+
+namespace modern_contact_indexing_system.Services
 {
     internal class ContactManager
     {

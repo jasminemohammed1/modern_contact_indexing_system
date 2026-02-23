@@ -1,8 +1,7 @@
-﻿
-using System.Text.Json;
+﻿using System.Text.Json;
 
 
-namespace modern_contact_indexing_system
+namespace modern_contact_indexing_system.Storage
 {
     internal class FileStorage : IStorage
     {

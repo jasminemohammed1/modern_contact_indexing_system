@@ -1,5 +1,7 @@
-﻿
-namespace modern_contact_indexing_system
+﻿using modern_contact_indexing_system.Services;
+using modern_contact_indexing_system.UI;
+
+namespace modern_contact_indexing_system.App
 {
     internal class Application
     {

@@ -1,6 +1,4 @@
-﻿
-
-namespace modern_contact_indexing_system
+﻿namespace modern_contact_indexing_system.UI
 {
     internal  static class Menue
     {
