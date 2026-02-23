@@ -86,7 +86,7 @@ namespace modern_contact_indexing_system.Services
             }
         }
 
-        public void EditContactPhoneByName(string NameToBeEdited , string NewPhone)
+       /* public void EditContactPhoneByName(string NameToBeEdited , string NewPhone)
         {
             Contact? contact = _contacts.FirstOrDefault(c => c.Name == NameToBeEdited);
             if (contact != null) {
@@ -100,7 +100,7 @@ namespace modern_contact_indexing_system.Services
 
 
         }
-
+       */
         public void EditContactNamebyName(string NameToBeEdited , string NewName)
         {
             Contact? contact = _contacts.FirstOrDefault(c => c.Name == NameToBeEdited);
