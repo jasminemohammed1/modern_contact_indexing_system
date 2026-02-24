@@ -1,5 +1,6 @@
 ﻿using modern_contact_indexing_system.Services;
 using modern_contact_indexing_system.UI;
+using System.Xml.Linq;
 
 namespace modern_contact_indexing_system.App
 {
@@ -25,36 +26,30 @@ namespace modern_contact_indexing_system.App
                         AddContact();
                         break;
                     case "2":
-                        EditContactName();
+                        EditContactById();
                         break;
                     case "3":
-                        EditContactPhone();
+                       DeleteById();
                         break;
                     case "4":
-                        DeleteByName();
+                       ViewById();
                         break;
                     case "5":
-                        DeleteById();
-                        break;
-                    case "6":
                         _manager.ListAllContacts();
                         break;
+                    case "6":
+                        SearchForMatchingContacts();
+                        break;
                     case "7":
-                        ViewById();
+                        FilterContactsByDate();
                         break;
 
                     case "8":
-                        SearchForMatchingContacts();
+                        _manager.Save();
                         break;
 
                     case "9":
-                        _manager.Save();
-                        break;
-
-                    case "10":
-                        _manager.Save();
-                        Console.WriteLine("Exiting...");
-                        return;
+                        ExitApplication();
                         break;
 
                     default:
@@ -66,56 +61,120 @@ namespace modern_contact_indexing_system.App
         }
         private void AddContact()
         {
-            Console.WriteLine("Enter The Contact Name: ");
-            string name = Console.ReadLine() ?? " ";
-            Console.WriteLine("Enter The Contact Phone: ");
-            string phone = Console.ReadLine() ?? " ";
-            Console.WriteLine("Enter The Contact Email: ");
-            string email = Console.ReadLine() ?? " ";
+            string name;
+            do
+            {
+                Console.WriteLine("Enter Contact Name To Add:");
+                name = Console.ReadLine() ?? " ";
+                if(string.IsNullOrWhiteSpace(name))
+                {
+                    Console.WriteLine("Name cannot be empty. Please enter a valid name.");
+                }
+
+            } while (string.IsNullOrWhiteSpace(name));
+            string phone;
+            do
+            {
+                Console.WriteLine("Enter The Contact Phone: ");
+                phone = Console.ReadLine() ?? "";
+
+                if (string.IsNullOrWhiteSpace(phone) || !phone.All(char.IsDigit))
+                {
+                    Console.WriteLine("Phone must contain digits only and cannot be empty.");
+                    phone = "";
+                }
+
+            } while (string.IsNullOrWhiteSpace(phone));
+
+            string email;
+            do
+            {
+                Console.WriteLine("Enter The Contact Email: ");
+                email = Console.ReadLine() ?? "";
+
+                if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+                {
+                    Console.WriteLine("Invalid email format.");
+                    email = "";
+                }
+
+            } while (string.IsNullOrWhiteSpace(email));
             _manager.AddContact(new Contact(name, email, phone));
+            Console.WriteLine("Contact Added Sucessfully.");
         }
-        private void EditContactName()
+        private void EditContactById()
         {
-            Console.WriteLine("Enter Contact Name To Edit: ");
-            string contactName = Console.ReadLine() ?? " ";
-            Console.WriteLine("Enter The Contact New Name: ");
-            string newContactName = Console.ReadLine() ?? " ";
-            _manager.EditContactNamebyName(contactName, newContactName);
+            Console.WriteLine("Enter Contact Id To Edit: ");
+            int id;
+
+            while(!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Invalid Id. Please enter a valid integer Id. ");
+            }
+            string newName;
+            do {
+                Console.WriteLine("Enter The new Name: ");
+                newName = Console.ReadLine() ?? " ";
+            }while(string.IsNullOrWhiteSpace(newName));    
+            string newPhone;
+            do
+            {
+                Console.WriteLine("Enter the new phone: ");
+                newPhone = Console.ReadLine() ?? " ";
+            } while (string.IsNullOrWhiteSpace(newPhone));
+
+            string newEmail;
+            do
+            {
+                Console.WriteLine("Enter the New Email: ");
+                newEmail = Console.ReadLine() ?? " ";
+            }
+            while (string.IsNullOrWhiteSpace(newEmail));
+
+            _manager.EditContactById(id, newName,  newPhone , newEmail);
+            Console.WriteLine("Contact Edited Sucessfully.");
         }
 
-        private void EditContactPhone()
-        {
-            Console.WriteLine("Enter Name To Edit Phone: ");
-            string Name = Console.ReadLine() ?? " ";
-            Console.WriteLine("Enter The New Phone: ");
-            string newPhone = Console.ReadLine() ?? " ";
-            _manager.EditContactPhoneByName(Name, newPhone);
-        }
-        private void DeleteByName()
-        {
-            Console.WriteLine("Enter Name To Delete");
-            string nameToDelete = Console.ReadLine() ?? " ";
-            _manager.DeleteContactByName(nameToDelete);
-        }
+       
+        
         private void DeleteById()
         {
             int id;
-            if (int.TryParse(Console.ReadLine(), out id))
+            bool isParsed;
+            do
             {
+                Console.WriteLine("Please Enter Contact Id To delete: ");
+                isParsed = int.TryParse(Console.ReadLine(), out id);
+                if (!isParsed)
+                {
+                    Console.WriteLine("Invalid Id. Please enter a valid number.");
+                }
+            } while(!isParsed);
+            
+            
                 _manager.DeleteContactById(id);
-            }
-            else
-            {
-                Console.WriteLine("InValid Id.");
-            }
+            Console.WriteLine("Contact Deleted Sucessfully.");
+            
+            
 
         }
         private void ViewById()
         {
-            Console.WriteLine("Enter Id To view: ");
-            if (int.TryParse(Console.ReadLine(), out int idToView))
+            int Id;
+            bool IsParsed;
+
+
+            do
             {
-                Contact? contact = _manager[idToView];
+                Console.WriteLine("Enter Id To view a contact: ");
+                IsParsed = int.TryParse(Console.ReadLine(), out Id);
+                if (!IsParsed)
+                {
+                    Console.WriteLine("Invalid Id. Please enter a valid id.");
+                }
+            }
+            while (!IsParsed);
+                Contact? contact = _manager[Id];
                 if (contact != null)
                 {
                     Console.WriteLine(contact);
@@ -126,19 +185,89 @@ namespace modern_contact_indexing_system.App
                     Console.WriteLine("Contact Not Found.");
                 }
 
-            }
-            else
-            {
-                Console.WriteLine("Invalid Id");
-            }
+            
+          
         }
         private void SearchForMatchingContacts()
         {
-            Console.WriteLine("Enter A Name To Search for Matching Contacts: ");
-            string searchName = Console.ReadLine() ?? " ";
-            var results = _manager.DisplayMatchingContactsByName(searchName);
+            string name;
+            do
+            {
+                Console.WriteLine("Enter a Name To Search For Matching Contacts.");
+                name = Console.ReadLine() ?? " ";
+
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    Console.WriteLine("Name cannot be empty. Please enter a valid name.");
+                }
+
+
+            }
+            while (string.IsNullOrWhiteSpace(name));
+           
+            var results = _manager.DisplayMatchingContactsByName(name);
             if (results.Count == 0) Console.WriteLine("No matching contacts found.");
             else results.ForEach(c => Console.WriteLine($"Id: {c.Id}, Name: {c.Name}, Phone: {c.Phone}, Email: {c.Email}, Created: {c.CreationDate}"));
+        }
+        private void ExitApplication()
+        {
+            string choice;
+
+            do
+            {
+                Console.WriteLine("Do you want to save before exiting? (Y/N)");
+                choice = (Console.ReadLine() ?? "").Trim().ToUpper();
+
+                if (choice == "Y")
+                {
+                    _manager.Save();
+                    Console.WriteLine("Changes saved.");
+                    break;
+                }
+                else if (choice == "N")
+                {
+                    Console.WriteLine("Exiting without saving.");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice. Please enter Y or N.");
+                }
+
+            } while (choice != "Y" && choice != "N");
+
+            Console.WriteLine("Exiting...");
+        }
+
+        private void FilterContactsByDate()
+        {
+            DateTime date;
+            bool isValid;
+
+            do
+            {
+                Console.WriteLine("Enter Date (yyyy-MM-dd): ");
+                isValid = DateTime.TryParse(Console.ReadLine(), out date);
+
+                if (!isValid)
+                {
+                    Console.WriteLine("Invalid date format. Please try again.");
+                }
+
+            } while (!isValid);
+
+            var results = _manager.FilterByDate(date);
+
+            if (results.Count == 0)
+            {
+                Console.WriteLine("No contacts found on this date.");
+            }
+            else
+            {
+                results.ForEach(c =>
+                    Console.WriteLine($"Id: {c.Id}, Name: {c.Name}, Phone: {c.Phone}, Email: {c.Email}, Created: {c.CreationDate}")
+                );
+            }
         }
     }
 }

@@ -69,14 +69,7 @@ namespace modern_contact_indexing_system.Services
             }
         }
 
-        public void DeleteContactByName(string NameToDelete)
-        {
-            Contact? contact = _contacts.FirstOrDefault(c => c.Name == NameToDelete);
-            if (contact != null)
-            {
-                _contacts.Remove(contact);
-            }
-        }
+        
 
         public void ListAllContacts()
         {
@@ -86,27 +79,15 @@ namespace modern_contact_indexing_system.Services
             }
         }
 
-       /* public void EditContactPhoneByName(string NameToBeEdited , string NewPhone)
+       
+        public void EditContactById(int id , string NewName , string NewPhone , string NewEmail)
         {
-            Contact? contact = _contacts.FirstOrDefault(c => c.Name == NameToBeEdited);
-            if (contact != null) {
-                contact.Phone = NewPhone;
-               
-                return;
-                
-            }
-            Console.WriteLine("This Contact doesnot exists");
-
-
-
-        }
-       */
-        public void EditContactNamebyName(string NameToBeEdited , string NewName)
-        {
-            Contact? contact = _contacts.FirstOrDefault(c => c.Name == NameToBeEdited);
+            Contact? contact = _contacts.FirstOrDefault(c => c.Id == id);
             if (contact != null)
             {
                 contact.Name = NewName;
+                contact.Phone = NewPhone;
+                contact.Email = NewEmail;
                 return;
 
             }
